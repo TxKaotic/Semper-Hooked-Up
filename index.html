@@ -1,273 +1,713 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Semper Hooked Up Charter Service</title>
-  <style>
-    /* -------- Global Reset -------- */
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { width:100%; height:100%; }
-    body {
-      position: relative;
-      font-family: 'Segoe UI', sans-serif;
-      line-height:1.6;
-      color:#fff;
-      background: linear-gradient(180deg, #1e3c72, #2a5298);
-      overflow-x: hidden;
-    }
-    a { color:inherit; text-decoration:none; }
-    img { display: block; width:100%; height:auto; }
-
-    /* -------- Ocean Animation -------- */
-    .ocean {
-      position: fixed; top:0; left:0;
-      width:100%; height:100%; overflow:hidden;
-      z-index:-2;
-    }
-    .wave {
-      position:absolute; bottom:0;
-      width:200%; height:120px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 50%;
-      animation: waveMove 12s linear infinite;
-    }
-    .wave:nth-child(2) {
-      bottom:15px;
-      animation-duration:16s;
-      background: rgba(255,255,255,0.1);
-    }
-    @keyframes waveMove {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .bubble {
-      position:absolute; bottom:0;
-      background: rgba(255,255,255,0.7);
-      border-radius:50%; opacity:0.6;
-      animation: bubbleMove linear infinite;
-    }
-    @keyframes bubbleMove {
-      0% { transform: translateY(0) scale(1); opacity:0.6; }
-      100% { transform: translateY(-100vh) scale(1.5); opacity:0; }
-    }
-
-    /* -------- Animations -------- */
-    @keyframes fadeInUp { from { opacity:0; transform: translateY(20px);} to { opacity:1; transform: translateY(0);} }
-    @keyframes scaleIn { from { opacity:0; transform: scale(0.9);} to { opacity:1; transform: scale(1);} }
-    .animate { opacity:0; animation: fadeInUp 0.8s ease forwards; }
-
-    /* -------- Navbar -------- */
-    nav {
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(5px);
-      position: sticky; top:0; z-index:100;
-      border-bottom: 2px solid #fff;
-    }
-    .nav-container {
-      max-width:1000px; margin:0 auto;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:0.75rem 1rem;
-      flex-wrap:wrap;
-    }
-    .logo { font-size:1.75rem; font-weight:bold; letter-spacing:1px; }
-    .nav-menu { list-style:none; display:flex; gap:1rem; flex-wrap:wrap; }
-    .nav-item { position:relative; }
-    .nav-item > a,
-    .nav-item > button {
-      padding:0.5rem 1rem;
-      background: rgba(255,255,255,0.1);
-      border-radius:8px; border:none;
-      cursor:pointer; font-size:1rem;
-      transition: background 0.3s, transform 0.3s;
-    }
-    .nav-item > a:hover,
-    .nav-item > button:hover {
-      background: rgba(255,255,255,0.2);
-      transform: translateY(-2px);
-    }
-    .dropdown-menu {
-      position:absolute; top:110%; left:0;
-      background: rgba(0,0,0,0.8);
-      list-style:none; min-width:220px;
-      display:none; border-radius:8px;
-      overflow:hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    }
-    .nav-item:hover .dropdown-menu { display:block; }
-    .dropdown-menu li a {
-      display:block; padding:0.6rem 1rem; white-space:nowrap;
-      transition: background 0.3s;
-    }
-    .dropdown-menu li a:hover { background: rgba(255,255,255,0.2); }
-
-    /* -------- Hero Banner -------- */
-    .hero {
-      text-align:center; padding:5rem 1rem;
-      background: linear-gradient(180deg, #1e3c72, #2a5298);
-      position:relative; overflow:hidden;
-    }
-    .hero::after {
-      content:''; position:absolute; inset:0;
-      background: rgba(0,0,0,0.4);
-    }
-    .hero-content { position:relative; z-index:1; color:#fff; }
-    .hero h1 { font-size:3.5rem; margin-bottom:0.5rem; animation: scaleIn 1s ease forwards; opacity:0; }
-    .hero p { font-size:1.5rem; animation: fadeInUp 1s ease 0.5s forwards; opacity:0; }
-
-    /* -------- Sections -------- */
-    section { padding:4rem 1rem; max-width:1000px; margin:0 auto; }
-    h2 { font-size:2.25rem; margin-bottom:1rem; border-bottom:3px solid #ffd700; display:inline-block; padding-bottom:0.25rem; animation: fadeInUp 0.8s ease forwards; opacity:0; }
-
-    /* Services cards */
-    .services-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap:1.5rem; }
-    .card { background: rgba(255,255,255,0.1); padding:2rem; border-radius:12px; transition: transform 0.3s, background 0.3s; opacity:0; animation: fadeInUp 0.8s ease forwards; }
-    .card:hover { background: rgba(255,255,255,0.2); transform: translateY(-8px); }
-    #red-snapper { animation-delay:0.2s; }
-    #pelagics { animation-delay:0.4s; }
-    #custom { animation-delay:0.6s; }
-
-    /* About Us */
-    #about p { max-width:800px; opacity:0; animation: fadeInUp 0.8s ease 0.5s forwards; }
-
-    /* Gallery */
-    .gallery-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:0.75rem; }
-    .gallery-grid img { border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); transform: scale(0.95); opacity:0; animation: scaleIn 0.6s ease forwards; }
-    .gallery-grid img:nth-child(1) { animation-delay:0.3s; }
-    .gallery-grid img:nth-child(2) { animation-delay:0.5s; }
-    .gallery-grid img:nth-child(3) { animation-delay:0.7s; }
-    .gallery-grid img:nth-child(4) { animation-delay:0.9s; }
-
-    /* Footer */
-    footer { text-align:center; padding:2.5rem 1rem; background: rgba(0,0,0,0.6); border-top:2px solid #ffd700; }
-    footer p { margin-bottom:0.5rem; }
-    footer a { color:#ffd700; transition: transform 0.3s; }
-    footer a:hover { transform: translateY(-2px); }
-
-    /* Mobile adjustments */
-    @media (max-width:600px) {
-      .hero h1 { font-size:2.5rem; }
-      .hero p { font-size:1.125rem; }
-      .nav-container { flex-direction: column; align-items: flex-start; }
-      .nav-menu { flex-direction: column; width:100%; }
-      .nav-item > a, .nav-item > button { width:100%; text-align: center; }
-      section { padding:3rem 1rem; }
-    }
-
-    /* Smooth scroll */
-    html { scroll-behavior: smooth; }
-  </style>
-</head>
-<body id="top">
-
-  <!-- OCEAN BACKGROUND -->
-  <div class="ocean">
-    <div class="wave"></div>
-    <div class="wave"></div>
-  </div>
-
-  <!-- NAVBAR -->
-  <nav>
-    <div class="nav-container">
-      <div class="logo">Semper Hooked Up</div>
-      <ul class="nav-menu">
-        <li class="nav-item"><a href="#top">Home</a></li>
-        <li class="nav-item dropdown">
-          <button>Services ▾</button>
-          <ul class="dropdown-menu">
-            <li><a href="#red-snapper">Red Snapper Charters</a></li>
-            <li><a href="#pelagics">Pelagics Trips</a></li>
-            <li><a href="#custom">Custom Offshore</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a href="#about">About Us</a></li>
-        <li class="nav-item"><a href="#gallery">Gallery</a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <header class="hero">
-    <div class="hero-content">
-      <h1>Semper Hooked Up Charter Service</h1>
-      <p>Offshore Fishing Adventures out of Matagorda, TX</p>
-    </div>
-  </header>
-
-  <!-- SERVICES -->
-  <section id="services">
-    <h2>Our Services</h2>
-    <div class="services-grid">
-      <div class="card" id="red-snapper">
-        <h3>Red Snapper Charters</h3>
-        <p>Target the mighty Red Snapper on our specialized offshore trips. Fully equipped vessel, expert crew, and all gear provided.</p>
-      </div>
-      <div class="card" id="pelagics">
-        <h3>Pelagic Species Trips</h3>
-        <p>Chase pelagics like King Mackerel, Tuna, and Wahoo. Thrilling runs and fast action—perfect for adrenaline junkies!</p>
-      </div>
-      <div class="card" id="custom">
-        <h3>Custom Offshore Adventures</h3>
-        <p>Have a dream catch or special event? We’ll design a personalized charter just for you—sunrise trips, night light fishing, you name it.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ABOUT US -->
-  <section id="about">
-    <h2>About Us</h2>
-    <p>
-      Semper Hooked Up Charter Service is a veteran-owned business based in Matagorda, Texas. We live and breathe the offshore life—our Captain has 20+ years running the Gulf, and our crew ensures you have a safe, fun, and successful day on the water. Whether you’re a seasoned angler or a first-timer, we take care of everything so you can focus on reeling in memories (and fish!).
-    </p>
-  </section>
-
-  <!-- GALLERY -->
-  <section id="gallery">
-    <h2>Gallery</h2>
-    <div class="gallery-grid">
-      <img src="https://via.placeholder.com/300x150?text=Image+1" alt="Gallery Image 1">
-      <img src="https://via.placeholder.com/300x150?text=Image+2" alt="Gallery Image 2">
-      <img src="https://via.placeholder.com/300x150?text=Image+3" alt="Gallery Image 3">
-      <img src="https://via.placeholder.com/300x150?text=Image+4" alt="Gallery Image 4">
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>📍 Matagorda, Texas</p>
-    <p>📞 <a href="tel:+11234567890">(123) 456-7890</a> │ ✉️ <a href="mailto:info@semperhookedup.com">info@semperhookedup.com</a></p>
-    <p>Follow us on <a href="#">Instagram</a> │ <a href="#">Facebook</a></p>
-  </footer>
-
-  <!-- JS -->
-  <script>
-    // Create ocean bubbles
-    function createBubbles() {
-      const ocean = document.querySelector('.ocean');
-      for (let i = 0; i < 30; i++) {
-        const bubble = document.createElement('div');
-        bubble.classList.add('bubble');
-        const size = Math.random() * 10 + 5;
-        bubble.style.width = `${size}px`;
-        bubble.style.height = `${size}px`;
-        bubble.style.left = `${Math.random() * 100}%`;
-        bubble.style.animationDuration = `${Math.random() * 5 + 5}s`;
-        bubble.style.animationDelay = `${Math.random() * 5}s`;
-        ocean.appendChild(bubble);
-      }
-    }
-    document.addEventListener('DOMContentLoaded', createBubbles);
-
-    // Scroll-triggered animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = 1;
-          observer.unobserve(entry.target);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semper Hooked Up Charter Service - Offshore Fishing Matagorda, Texas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      });
-    }, { threshold: 0.3 });
-    document.querySelectorAll('.animate, .hero h1, .hero p').forEach(el => observer.observe(el));
-  </script>
 
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c5f2d 0%, #97bc62 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="80" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(-50px) translateY(-100px); }
+        }
+
+        .logo {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-button:hover::before {
+            left: 100%;
+        }
+
+        .nav-button:hover {
+            background: rgba(52, 152, 219, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button.active {
+            background: rgba(231, 76, 60, 0.8);
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: rgba(44, 62, 80, 0.95);
+            min-width: 200px;
+            border-radius: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(52, 152, 219, 0.6);
+            padding-left: 30px;
+        }
+
+        .content {
+            padding: 2rem;
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+            background: linear-gradient(135deg, rgba(41, 128, 185, 0.1) 0%, rgba(109, 213, 250, 0.1) 100%);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text {
+            font-size: 1.3rem;
+            color: #34495e;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-description {
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #bdc3c7;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-placeholder {
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        .contact-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .fish-icon {
+            display: inline-block;
+            animation: swim 3s ease-in-out infinite;
+        }
+
+        @keyframes swim {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            50% { transform: translateX(10px) rotate(-5deg); }
+        }
+
+        .wave-decoration {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            height: 50px;
+            margin: 2rem 0;
+        }
+
+        .wave-decoration::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 20px,
+                rgba(255, 255, 255, 0.1) 20px,
+                rgba(255, 255, 255, 0.1) 40px
+            );
+            animation: wave 4s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>🎣 Semper Hooked Up Charter Service</h1>
+                <p class="tagline">Premier Offshore Fishing • Matagorda, Texas • Red Snapper Specialists</p>
+            </div>
+        </header>
+
+        <nav>
+            <div class="nav-container">
+                <div class="nav-item">
+                    <button class="nav-button active" onclick="showTab('home')">Home</button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button">Services</button>
+                    <div class="dropdown">
+                        <div class="dropdown-item" onclick="showTab('offshore-trips')">Offshore Fishing Trips</div>
+                        <div class="dropdown-item" onclick="showTab('red-snapper')">Red Snapper Specialists</div>
+                        <div class="dropdown-item" onclick="showTab('pelagic-fishing')">Pelagic Species</div>
+                        <div class="dropdown-item" onclick="showTab('charter-packages')">Charter Packages</div>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button">About Us</button>
+                    <div class="dropdown">
+                        <div class="dropdown-item" onclick="showTab('our-story')">Our Story</div>
+                        <div class="dropdown-item" onclick="showTab('captain-crew')">Captain & Crew</div>
+                        <div class="dropdown-item" onclick="showTab('our-boat')">Our Vessel</div>
+                        <div class="dropdown-item" onclick="showTab('safety')">Safety First</div>
+                    </div>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" onclick="showTab('gallery')">Gallery</button>
+                </div>
+                <div class="nav-item">
+                    <button class="nav-button" onclick="showTab('contact')">Contact</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Home Tab -->
+            <div class="tab-content active" id="home">
+                <div class="hero-section">
+                    <h2 class="hero-title">Welcome Aboard! <span class="fish-icon">🐟</span></h2>
+                    <p class="hero-text">Experience the thrill of offshore fishing in the Gulf of Mexico! Based in Matagorda, Texas, we specialize in Red Snapper fishing and targeting pelagic species. Our experienced crew will guide you to the best fishing spots for an unforgettable adventure on the water.</p>
+                </div>
+                
+                <div class="wave-decoration"></div>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3 class="service-title">🎯 Red Snapper Specialists</h3>
+                        <p class="service-description">We know where the big Red Snapper hide! Our expert knowledge of local waters and proven techniques ensure you'll have the best chance at landing trophy fish.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">🌊 Offshore Adventures</h3>
+                        <p class="service-description">Venture into the deep waters of the Gulf of Mexico for an authentic offshore fishing experience targeting various pelagic species including Mahi, Tuna, and more.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">⚓ Professional Service</h3>
+                        <p class="service-description">From beginners to experienced anglers, we provide top-notch equipment, expert guidance, and ensure everyone has a safe and successful fishing trip.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Tabs -->
+            <div class="tab-content" id="offshore-trips">
+                <h2>Offshore Fishing Trips</h2>
+                <p>Our offshore fishing trips take you into the deep waters of the Gulf of Mexico, where the big fish roam. We offer full-day and half-day trips, targeting a variety of species depending on the season and conditions.</p>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3 class="service-title">Full Day Trips</h3>
+                        <p class="service-description">8-10 hour adventures into deep water. Perfect for serious anglers looking to target larger pelagic species and make the most of their time on the water.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">Half Day Trips</h3>
+                        <p class="service-description">4-6 hour trips ideal for families or those new to offshore fishing. Great for targeting Red Snapper and other reef fish.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="red-snapper">
+                <h2>Red Snapper Specialists</h2>
+                <p>Red Snapper are the crown jewel of Gulf Coast fishing, and we know exactly where to find them! Our years of experience fishing the waters around Matagorda have given us intimate knowledge of the best reefs and structures.</p>
+                
+                <div class="hero-section">
+                    <h3>Why Choose Us for Red Snapper?</h3>
+                    <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <li>25+ years of Red Snapper fishing experience</li>
+                        <li>Knowledge of prime fishing locations and structures</li>
+                        <li>High-quality tackle and bait specifically for Snapper</li>
+                        <li>Expert guidance on techniques and best practices</li>
+                        <li>Compliance with all state and federal regulations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tab-content" id="pelagic-fishing">
+                <h2>Pelagic Species Fishing</h2>
+                <p>The Gulf of Mexico is home to incredible pelagic species that provide thrilling fights and delicious meals. Our offshore trips target these open-water predators.</p>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3 class="service-title">Mahi-Mahi (Dolphinfish)</h3>
+                        <p class="service-description">Colorful, acrobatic, and delicious! Mahi-Mahi are found around floating debris and weed lines in warmer months.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">Yellowfin Tuna</h3>
+                        <p class="service-description">The ultimate fighting fish! These powerful predators provide intense battles and premium sashimi-grade meat.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">King Mackerel</h3>
+                        <p class="service-description">Fast and aggressive, King Mackerel are perfect for anglers who love the excitement of high-speed runs and aerial displays.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="charter-packages">
+                <h2>Charter Packages</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3 class="service-title">Basic Package</h3>
+                        <p class="service-description">Half-day trip, all tackle included, fish cleaning service, and basic refreshments. Perfect for beginners and families.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">Premium Package</h3>
+                        <p class="service-description">Full-day trip, premium tackle, lunch included, fish cleaning and packaging, and professional photos of your catch.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">VIP Experience</h3>
+                        <p class="service-description">Extended trip with multiple fishing locations, gourmet meals, premium beverages, professional videography, and concierge fish shipping service.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Us Tabs -->
+            <div class="tab-content" id="our-story">
+                <h2>Our Story</h2>
+                <div class="hero-section">
+                    <p class="hero-text">Semper Hooked Up Charter Service is a proud veteran-owned business born from a lifelong passion for the Gulf of Mexico and its incredible fishing opportunities. Founded by military veterans who understand the value of precision, dedication, and service, we've been guiding anglers to trophy fish for over two decades.</p>
+                </div>
+                
+                <p>As a veteran-owned charter service, we bring the same commitment to excellence and attention to detail that served us in the military to every fishing expedition. Our love affair with the waters around Matagorda began years ago, and through countless hours on the water, we've developed an intimate understanding of the seasonal patterns, structures, and techniques that lead to successful fishing trips.</p>
+                
+                <p>"Semper" means "always" in Latin - a testament to our military roots and our unwavering commitment to providing you with an exceptional fishing experience. We're honored to serve both fellow veterans and civilian anglers alike, bringing the same level of professionalism and dedication to every charter that we brought to our military service.</p>
+            </div>
+
+            <div class="tab-content" id="captain-crew">
+                <h2>Captain & Crew</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3 class="service-title">Captain Justin Daniels</h3>
+                        <p class="service-description">USCG Licensed Master Captain with 25+ years experience. Former Navy veteran specializing in Red Snapper and pelagic species fishing in the Gulf of Mexico.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">First Mate Melanie Daniels</h3>
+                        <p class="service-description">Marine biology background with expert knowledge of Gulf ecosystems. Specializes in teaching fishing techniques and fish handling.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="our-boat">
+                <h2>Our Vessel</h2>
+                <div class="hero-section">
+                    <h3>42' Custom Sportfisher "Hooked Up"</h3>
+                    <p class="hero-text">Our custom-built sportfisher is specifically designed for Gulf of Mexico conditions. Featuring twin diesel engines, advanced electronics, spacious cockpit, and all the amenities needed for a comfortable and successful fishing trip.</p>
+                </div>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3 class="service-title">Safety Equipment</h3>
+                        <p class="service-description">Latest GPS/Fishfinder technology, radar, VHF radios, EPIRBs, life jackets, first aid equipment, and emergency flares.</p>
+                    </div>
+                    <div class="service-card">
+                        <h3 class="service-title">Comfort Features</h3>
+                        <p class="service-description">Climate-controlled cabin, comfortable seating, restroom facilities, fresh water system, and plenty of shade in the cockpit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="safety">
+                <h2>Safety First</h2>
+                <p>Your safety is our top priority. Our vessel is regularly inspected and maintained to exceed Coast Guard standards. All crew members are CPR and first aid certified, and we maintain comprehensive safety equipment and emergency protocols.</p>
+                
+                <div class="hero-section">
+                    <h3>Our Safety Commitments:</h3>
+                    <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <li>USCG Licensed and Inspected Vessel</li>
+                        <li>Comprehensive Safety Briefings</li>
+                        <li>Weather Monitoring and Trip Adjustments</li>
+                        <li>Emergency Communication Equipment</li>
+                        <li>First Aid and CPR Certified Crew</li>
+                        <li>Proper Life Jacket Fitting for All Passengers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Gallery Tab -->
+            <div class="tab-content" id="gallery">
+                <h2>Gallery</h2>
+                <p>Check out some of our recent catches and happy customers! Click the placeholder areas below to add your own photos from past fishing trips.</p>
+                
+                <div class="gallery-grid">
+                    <div class="gallery-item" onclick="addPhoto(this)">
+                        <div class="gallery-placeholder">
+                            <p>📸 Click to Add Photo<br><small>Trophy Red Snapper</small></p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="addPhoto(this)">
+                        <div class="gallery-placeholder">
+                            <p>📸 Click to Add Photo<br><small>Mahi-Mahi Catch</small></p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="addPhoto(this)">
+                        <div class="gallery-placeholder">
+                            <p>📸 Click to Add Photo<br><small>Happy Customers</small></p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="addPhoto(this)">
+                        <div class="gallery-placeholder">
+                            <p>📸 Click to Add Photo<br><small>Yellowfin Tuna</small></p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="addPhoto(this)">
+                        <div class="gallery-placeholder">
+                            <p>📸 Click to Add Photo<br><small>Boat Action Shot</small></p>
+                        </div>
+                    </div>
+                    <div class="gallery-item" onclick="addPhoto(this)">
+                        <div class="gallery-placeholder">
+                            <p>📸 Click to Add Photo<br><small>King Mackerel</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Tab -->
+            <div class="tab-content" id="contact">
+                <h2>Contact Us</h2>
+                <p>Ready to book your next fishing adventure? Get in touch with us to check availability and discuss your fishing goals!</p>
+                
+                <div class="contact-info">
+                    <h3 class="contact-title">🎣 Semper Hooked Up Charter Service</h3>
+                    <div class="contact-details">
+                        <div>
+                            <h4>📞 Phone</h4>
+                            <p>(979) 555-FISH (3474)</p>
+                        </div>
+                        <div>
+                            <h4>📧 Email</h4>
+                            <p>captain@semperhookedup.com</p>
+                        </div>
+                        <div>
+                            <h4>📍 Location</h4>
+                            <p>Matagorda, Texas<br>Gulf Coast Marina</p>
+                        </div>
+                        <div>
+                            <h4>⏰ Season</h4>
+                            <p>Year-round charters<br>Best fishing: March - November</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-section">
+                    <h3>Book Your Trip Today!</h3>
+                    <p>Call or email us to check availability and reserve your dates. We recommend booking in advance, especially during peak Red Snapper season!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Update nav button states
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Find and activate the correct nav button
+            if (tabId === 'home') {
+                document.querySelector('.nav-button').classList.add('active');
+            }
+        }
+
+        function addPhoto(element) {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        element.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;" alt="Fishing Photo">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to service cards
+            const serviceCards = document.querySelectorAll('.service-card');
+            serviceCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+            
+            // Add click effect to gallery items
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

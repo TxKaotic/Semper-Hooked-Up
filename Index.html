@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Semper Hooked Up Charter Service</title>
+  <style>
+    /* -------- Global Reset -------- */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; }
+    body {
+      position: relative;
+      font-family: 'Segoe UI', sans-serif;
+      line-height:1.6;
+      color:#fff;
+      background: linear-gradient(180deg, #1e3c72, #2a5298);
+      overflow-x: hidden;
+    }
+    a { color:inherit; text-decoration:none; }
+    img { display: block; max-width:100%; height:auto; }
+
+    /* -------- Ocean Animation -------- */
+    .ocean {
+      position: fixed; top:0; left:0;
+      width:100%; height:100%; overflow:hidden;
+      z-index:-2;
+    }
+    .wave {
+      position:absolute; bottom:0;
+      width:200%; height:120px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      animation: waveMove 12s linear infinite;
+    }
+    .wave:nth-child(2) {
+      bottom:15px;
+      animation-duration:16s;
+      background: rgba(255,255,255,0.1);
+    }
+    @keyframes waveMove {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .bubble {
+      position:absolute; bottom:0;
+      background: rgba(255,255,255,0.7);
+      border-radius:50%; opacity:0.6;
+      animation: bubbleMove linear infinite;
+    }
+    @keyframes bubbleMove {
+      0% { transform: translateY(0) scale(1); opacity:0.6; }
+      100% { transform: translateY(-100vh) scale(1.5); opacity:0; }
+    }
+
+    /* -------- Animations -------- */
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(20px);} to { opacity:1; transform: translateY(0);} }
+    @keyframes scaleIn { from { opacity:0; transform: scale(0.9);} to { opacity:1; transform: scale(1);} }
+    .animate { opacity:0; animation: fadeInUp 0.8s ease forwards; }
+
+    /* -------- Navbar -------- */
+    nav {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      position: sticky; top:0; z-index:100;
+      border-bottom: 2px solid #fff;
+    }
+    .nav-container {
+      max-width:1000px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0.75rem 1rem;
+      flex-wrap:wrap;
+    }
+    .logo { font-size:1.75rem; font-weight:bold; letter-spacing:1px; }
+    .nav-menu { list-style:none; display:flex; gap:1rem; flex-wrap:wrap; }
+    .nav-item { position:relative; }
+    .nav-item > a,
+    .nav-item > button {
+      padding:0.5rem 1rem;
+      background: rgba(255,255,255,0.1);
+      border-radius:8px; border:none;
+      cursor:pointer; font-size:1rem;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .nav-item > a:hover,
+    .nav-item > button:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-2px);
+    }
+    .dropdown-menu {
+      position:absolute; top:110%; left:0;
+      background: rgba(0,0,0,0.8);
+      list-style:none; min-width:220px;
+      display:none; border-radius:8px;
+      overflow:hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .nav-item:hover .dropdown-menu { display:block; }
+    .dropdown-menu li a {
+      display:block; padding:0.6rem 1rem; white-space:nowrap;
+      transition: background 0.3s;
+    }
+    .dropdown-menu li a:hover { background: rgba(255,255,255,0.2); }
+
+    /* -------- Hero Banner -------- */
+    .hero {
+      text-align:center; padding:5rem 1rem;
+      background: url('images/hero-ocean.jpg') center/cover no-repeat;
+      position:relative; overflow:hidden;
+    }
+    .hero::after {
+      content:''; position:absolute; inset:0;
+      background: rgba(0,0,0,0.4);
+    }
+    .hero-content { position:relative; z-index:1; color:#fff; }
+    .hero h1 { font-size:3.5rem; margin-bottom:0.5rem; animation: scaleIn 1s ease forwards; opacity:0; }
+    .hero p { font-size:1.5rem; animation: fadeInUp 1s ease 0.5s forwards; opacity:0; }
+
+    /* -------- Sections -------- */
+    section { padding:4rem 1rem; max-width:1000px; margin:0 auto; }
+    h2 { font-size:2.25rem; margin-bottom:1rem; border-bottom:3px solid #ffd700; display:inline-block; padding-bottom:0.25rem; animation: fadeInUp 0.8s ease forwards; opacity:0; }
+
+    /* Services cards */
+    .services-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap:1.5rem; }
+    .card { background: rgba(255,255,255,0.1); padding:2rem; border-radius:12px; transition: transform 0.3s, background 0.3s; opacity:0; animation: fadeInUp 0.8s ease forwards; }
+    .card:hover { background: rgba(255,255,255,0.2); transform: translateY(-8px); }
+    #red-snapper { animation-delay:0.2s; }
+    #pelagics { animation-delay:0.4s; }
+    #custom { animation-delay:0.6s; }
+
+    /* About Us */
+    #about p { max-width:800px; opacity:0; animation: fadeInUp 0.8s ease 0.5s forwards; }
+
+    /* Gallery */
+    .gallery-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:0.75rem; }
+    .gallery-grid img { border-radius:8px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); transform: scale(0.95); opacity:0; animation: scaleIn 0.6s ease forwards; }
+    .gallery-grid img:nth-child(1) { animation-delay:0.3s; }
+    .gallery-grid img:nth-child(2) { animation-delay:0.5s; }
+    .gallery-grid img:nth-child(3) { animation-delay:0.7s; }
+    .gallery-grid img:nth-child(4) { animation-delay:0.9s; }
+
+    /* Footer */
+    footer { text-align:center; padding:2.5rem 1rem; background: rgba(0,0,0,0.6); border-top:2px solid #ffd700; }
+    footer p { margin-bottom:0.5rem; }
+    footer a { color:#ffd700; transition: transform 0.3s; }
+    footer a:hover { transform: translateY(-2px); }
+
+    /* Mobile adjustments */
+    @media (max-width:600px) {
+      .hero h1 { font-size:2.5rem; }
+      .hero p { font-size:1.125rem; }
+      .nav-container { flex-direction: column; align-items: flex-start; }
+      .nav-menu { flex-direction: column; width:100%; }
+      .nav-item > a, .nav-item > button { width:100%; text-align: center; }
+      section { padding:3rem 1rem; }
+    }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body id="top">
+
+  <!-- OCEAN BACKGROUND -->
+  <div class="ocean">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">Semper Hooked Up</div>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="#top">Home</a></li>
+        <li class="nav-item dropdown">
+          <button>Services ▾</button>
+          <ul class="dropdown-menu">
+            <li><a href="#red-snapper">Red Snapper Charters</a></li>
+            <li><a href="#pelagics">Pelagics Trips</a></li>
+            <li><a href="#custom">Custom Offshore</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a href="#about">About Us</a></li>
+        <li class="nav-item"><a href="#gallery">Gallery</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Semper Hooked Up Charter Service</h1>
+      <p>Offshore Fishing Adventures out of Matagorda, TX</p>
+    </div>
+  </header>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <h2>Our Services</h2>
+    <div class="services-grid">
+      <div class="card" id="red-snapper">
+        <h3>Red Snapper Charters</h3>
+        <p>Target the mighty Red Snapper on our specialized offshore trips. Fully equipped vessel, expert crew, and all gear provided.</p>
+      </div>
+      <div class="card" id="pelagics">
+        <h3>Pelagic Species Trips</h3>
+        <p>Chase pelagics like King Mackerel, Tuna, and Wahoo. Thrilling runs and fast action—perfect for adrenaline junkies!</p>
+      </div>
+      <div class="card" id="custom">
+        <h3>Custom Offshore Adventures</h3>
+        <p>Have a dream catch or special event? We’ll design a personalized charter just for you—sunrise trips, night light fishing, you name it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT US -->
+  <section id="about">
+    <h2>About Us</h2>
+    <p>
+      Semper Hooked Up Charter Service is a veteran-owned business based in Matagorda, Texas. We live and breathe the offshore life—our Captain has 20+ years running the Gulf, and our crew ensures you have a safe, fun, and successful day on the water. Whether you’re a seasoned angler or a first-timer, we take care of everything so you can focus on reeling in memories (and fish!).
+    </p>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <h2>Gallery</h2>
+    <div class="gallery-grid">
+      <img src="images/trip1.jpg" alt="Big Red Snapper Catch">
+      <img src="images/trip2.jpg" alt="Happy Anglers">
+      <img src="images/trip3.jpg" alt="Sunset Catch">
+      <img src="images/trip4.jpg" alt="Pelagic Pursuit">
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>📍 Matagorda, Texas</p>
+    <p>📞 <a href="tel:+11234567890">(123) 456-7890</a> │ ✉️ <a href="mailto:info@semperhookedup.com">info@semperhookedup.com</a></p>
+    <p>Follow us on <a href="#">Instagram</a> │ <a href="#">Facebook</a></p>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    // Create ocean bubbles
+    function createBubbles() {
+      const ocean = document.querySelector('.ocean');
+      for (let i = 0; i < 30; i++) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('bubble');
+        const size = Math.random() * 10 + 5; 
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${Math.random() * 100}%`;
+        bubble.style.animationDuration = `${Math.random() * 5 + 5}s`;
+        bubble.style.animationDelay = `${Math.random() * 5}s`;
+        ocean.appendChild(bubble);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', createBubbles);
+
+    // Scroll-triggered animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    document.querySelectorAll('.animate, .hero h1, .hero p').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
